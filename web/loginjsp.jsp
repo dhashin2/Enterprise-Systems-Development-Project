@@ -29,7 +29,8 @@
   <label>Password:</label>
   <input type="password" name="yourName" value=""><br>
   <button type="button" class="btn btn-dark btn-md download-button"><i class=""></i> Login</button>
-  <a href="registerjsp.jsp"><button type="button" class="btn btn-dark btn-md download-button"><i class=""></i> Sign Up</button></a>
+  <a href="registerjsp.jsp"><button type="button" class="btn btn-dark btn-md download-button"><i class=""></i> Sign Up</button></a> 
+  
 </div>
   </body>
 </html>
