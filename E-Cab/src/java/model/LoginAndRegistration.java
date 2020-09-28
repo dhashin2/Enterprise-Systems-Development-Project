@@ -13,52 +13,114 @@ import java.sql.*;
  */
 public class LoginAndRegistration {
     
-    /*
-    Returns true if user was registered. Returns false if username was already taken or if an error occured during registration
+    DBBean db = new DBBean();
+    ResultSet resultSet = null;
+    
+    /* 
+    Creates a new customer and returns a User object if username is not in Database
+    Returns null if username is already in Database or if an error occured
     */
-    public boolean Register(String username,String password, Connection con) {
-        String query = "select CustomerName from Customers where CustomerName=" + "Upper('"+ username + "')";
-        DBBean db = new DBBean();
-        ResultSet resultSet = db.doQuery(query, con);
+    public User RegisterCustomer(String username, String password, Connection con) {
+        String query = "SELECT Customers.*, Drivers.DriverName, Drivers.Password, AdminTable.* FROM Customers, Drivers, AdminTable " +
+                       "WHERE Customers.CustomerName = Upper('" + username + "') OR Drivers.DriverName = Upper('" + username + "') " + 
+                       "OR AdminTable.AdminName = Upper('" + username + "')";
+        resultSet = db.doQuery(query, con);
         try {
-            // if resultSet is empty add username and password to db and return true
+            // if resultSet is empty add username and password to db and return the newly created User
             if (resultSet.next() == false) {
-                query = "INSERT INTO Customers (CustomerName, Password) VALUES (Upper('" + username + "'), '" + password + "')";
+                query =  "INSERT INTO Customers (CustomerName, Password) VALUES (Upper('" + username + "'), '" + password + "')";
                 db.doQuery(query, con);
-                return true;
+                User loggedUser = new User(username, password, con);
+                return loggedUser;
             }
-            // username is already taken. therefore return false
+            // username is already taken. therefore return null
             else {
-                return false;
+                return null;
             }
         }
-        // return false in case of an SQL exception
+        // return null in case of an SQL exception
         catch (SQLException s){
-            return false;
+            return null;
+            //s.printStackTrace();
+        }
+    }
+    
+    /* 
+    Creates a new driver and returns a User object if username is not in Database
+    Returns null if username is already in Database or if an error occured
+    */
+    public User RegisterDriver(String username,String password, String VehicleNo, Connection con) {
+        String query = "SELECT Customers.*, Drivers.DriverName, Drivers.Password, AdminTable.* FROM Customers, Drivers, AdminTable " +
+                       "WHERE Customers.CustomerName = Upper('" + username + "') OR Drivers.DriverName = Upper('" + username + "') " + 
+                       "OR AdminTable.AdminName = Upper('" + username + "')";
+        resultSet = db.doQuery(query, con);
+        try {
+            // if resultSet is empty add username and password to db and return the newly created User
+            if (resultSet.next() == false) {
+                query =  "INSERT INTO Drivers (DriverName, Password, VehicleNo) " +
+                         "VALUES (Upper('" + username + "'), '" + password + "', Upper('" + VehicleNo + "'))";
+                db.doQuery(query, con);
+                User loggedUser = new User(username, password, con);
+                return loggedUser;
+            }
+            // username is already taken. therefore return null
+            else {
+                return null;
+            }
+        }
+        // return null in case of an SQL exception
+        catch (SQLException s){
+            return null;
             //s.printStackTrace();
         }
     }
     
     /*
-    Returns true if credentials match. Return false if credentials do not match or if an error occured
+    Returns a User object if the credentials match with a User in DB
+    Returns null if user is not found, password mismatches or if an error occurs
     */
-    public boolean Login(String username,String password, Connection con) {
+    public User Login(String username,String password, Connection con) {
         String query = "select CustomerName, Password from Customers where CustomerName=Upper('" + username + "')";
-        DBBean db = new DBBean();
-        ResultSet resultSet = db.doQuery(query, con);
+        resultSet = db.doQuery(query, con);
         try {
-            // if resultSet is not empty check if credentials match
-            if (resultSet.next() != false) {
+            // if user not in customers table, then check drivers table
+            if (resultSet.next() == false) {
+                query = "select DriverName, Password from Drivers where DriverName=Upper('" + username + "')";
+                resultSet = db.doQuery(query, con);
+                // if user not in drivers table, then check admin table
+                if (resultSet.next() == false) {
+                    query = "select AdminName, Password from AdminTable where AdminName=Upper('" + username + "')";
+                    resultSet = db.doQuery(query, con);
+                    // if user in admin table check credentials
+                    if (resultSet.next() != false) {
+                        if (username.equalsIgnoreCase(resultSet.getString(1)) && password.equals(resultSet.getString(2))) {
+                            User loggedUser = new User(resultSet.getString(1), resultSet.getString(2), con);
+                            return loggedUser;
+                        }
+                    }
+                }   
+                // user in drivers table. check credentials
+                else {
+                    if (username.equalsIgnoreCase(resultSet.getString(1)) && password.equals(resultSet.getString(2))) {
+                    User loggedUser = new User(resultSet.getString(1), resultSet.getString(2), con);
+                    return loggedUser;
+                    }
+                }
+            }
+            // user in customers table. check credentials
+            else {
                 if (username.equalsIgnoreCase(resultSet.getString(1)) && password.equals(resultSet.getString(2))) {
-                    return true;
+                    User loggedUser = new User(resultSet.getString(1), resultSet.getString(2), con);
+                    return loggedUser;
                 }
             }
         }
-        // return false in case of an SQL exception
+        // return null in case of an SQL exception
         catch (SQLException s){
-            return false;
+            return null;
             //s.printStackTrace();
         }
-        return false;
+        return null;
     }
+    
 }
