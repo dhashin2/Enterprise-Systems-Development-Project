@@ -1,8 +1,15 @@
+<%-- 
+    Document   : loginjsp
+    Created on : Sep 28, 2020, 5:05:23 PM
+    Author     : Dhashin
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Register Form</title>
+    <title>Login Form</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="css/styles.css">
     <link
@@ -13,19 +20,16 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
   </head>
+
   <body>
-    <div class="login-div">
-      <h1>Sign Up Here</h1>
-      <label>Email:</label>
-      <input type="text" name="yourName" value=""><br>
-      <label>Name:</label>
-      <input type="text" name="yourName" value=""><br>
-      <label>Password:</label>
-      <input type="password" name="yourName" value=""><br>
-      <button type="button" class="btn btn-dark btn-md download-button"><i class=""></i> Sign Up</button>
-      <a href="Login.html"><button type="button" class="btn btn-dark btn-md download-button"><i class=""></i> Go Back</button></a>
-    </div>
-
-
+<div class="login-div">
+  <h1>Login Here</h1>
+  <label>Userame:</label>
+  <input type="text" name="yourName" value=""><br>
+  <label>Password:</label>
+  <input type="password" name="yourName" value=""><br>
+  <button type="button" class="btn btn-dark btn-md download-button"><i class=""></i> Login</button>
+  <a href="registerjsp.jsp"><button type="button" class="btn btn-dark btn-md download-button"><i class=""></i> Sign Up</button></a>
+</div>
   </body>
 </html>
